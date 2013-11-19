@@ -5,10 +5,10 @@
 	@if(!empty($message))
 	<h2>{{ $message }}</h2>
 	@endif
-	{{ Form::open(array('url' => URL::route('authenticate'))) }}
-	<p>{{ Form::label('username', 'Your username') }}: {{ Form::text('username') }}</p>
-	<p>{{ Form::label('password', 'Your password') }}: {{ Form::password('password') }}</p>
-	<p>{{ Form::submit('Log in') }}
+	{{ Form::open(array('url' => URL::route('authenticate'), 'class' => 'form-signin')) }}
+	<p>{{ Form::text('username', null, array('class' => 'form-control', 'placeholder' => 'Your username')) }}</p>
+	<p>{{ Form::password('password', array('class' => 'form-control', 'placeholder' => 'Your password' )) }}</p>
+	<p>{{ Form::submit('Log in', array('class' => 'btn btn-primary btn-block')) }}</p>
 	{{ Form::close() }}
-	<a href="{{ URL::route('register') }}">Create account</a>
+	<p><a href="{{ URL::route('register') }}">Create account</a></p>
 @stop
