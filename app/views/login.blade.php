@@ -3,7 +3,7 @@
 @section('content')
 	<h1>Log in</h1>
 	@if(!empty($message))
-	<h2>{{ $message }}</h2>
+	<p>{{ $message }}</p>
 	@endif
 	{{ Form::open(array('url' => URL::route('authenticate'), 'class' => 'form-signin')) }}
 	<p>{{ Form::text('username', null, array('class' => 'form-control', 'placeholder' => 'Your username')) }}</p>

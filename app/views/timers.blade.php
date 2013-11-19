@@ -1,18 +1,27 @@
 @extends('base')
 
 @section('content')
-	<h1>Welcome {{ $user->username }}!</h1><a href="{{ URL::route('logout') }}">Log out</a>
-	<ul id="timers">
+	<h1>Welcome {{ $user->username }}!</h1>
+	<div id="timers" class="list-group">
 	@foreach($timers as $timer)
-		<li id="{{ $timer->id }}" class="timer {{ $timer->getStateName() }}">
-			<span class="name">{{ $timer->name }}</span>
-			<span class="elapsed">{{ $timer->getTotalElapsed() }}</span>
-			<span class="actions"><a class="controller" href="#">Start/Stop</a></span>
-		</li>
+		<div id="{{ $timer->id }}" class="list-group-item timer {{ $timer->getStateName() }}">
+			<p class="name">Name: {{ $timer->name }}</p>
+			<p>Time: <span class="elapsed">{{ $timer->getTotalElapsed() }}</span></p>
+			<p class="actions">
+				<a class="controller" href="#">
+				@if ($timer->running)
+				Stop
+				@else
+				Start
+				@endif
+				</a>
+			</p>
+		</div>
 	@endforeach
-	</ul>
-	<h2>Total: <span id="total-elapsed">{{ $totalTime }}</span></h2>
-	<p><a href="{{ URL::route('create-timer') }}">Create Timer</a></p>
+	</div>
+	<h2>Total time: <span id="total-elapsed">{{ $totalTime }}</span></h2>
+	<p><a href="{{ URL::route('create-timer') }}" class="btn btn-primary btn-block">Create Timer</a></p>
+	<p><a href="{{ URL::route('logout') }}" class="btn btn-default btn-block">Log out</a></p>
 @stop
 
 @section('app')
@@ -70,6 +79,7 @@ $(document).ready(function () {
 				if (result) {
 					timer.removeClass('stopped');
 					timer.addClass('running');
+					timer.find('.controller').html('Stop');
 					TimerUpdater.register(timer);
 				}
 			});
@@ -79,6 +89,7 @@ $(document).ready(function () {
 				if (response.result) {
 					timer.removeClass('running');
 					timer.addClass('stopped');
+					timer.find('.controller').html('Start');
 					TimerUpdater.unregister(timer);
 					TimerUpdater.setElapsed(timer, response.elapsed);
 				}
@@ -95,7 +106,7 @@ $(document).ready(function () {
 		toggleTimerSate($(this).parent().parent());
 		return false;
 	});
-	$('ul#timers li').each(function () {
+	$('.timer').each(function () {
 		setupTimer($(this));
 	});
 	TimerUpdater.start();

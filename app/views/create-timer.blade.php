@@ -2,7 +2,7 @@
 
 @section('content')
 	{{ Form::model($timer) }}
-	<p>{{ Form::label('name', 'Timer name') }}: {{ Form::text('name') }}</p>
-	<p>{{ Form::submit('Create') }}</p>
+	<p>{{ Form::text('name', null, array('class' => 'form-control', 'placeholder' => 'Timer name')) }}</p>
+	<p>{{ Form::submit('Create', array('class' => 'btn btn-primary btn-block')) }}</p>
 	{{ Form::close() }}
 @stop
