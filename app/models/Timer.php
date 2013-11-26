@@ -6,29 +6,7 @@ class Timer extends Eloquent {
 	
 	const STATE_STOPPED = 'stopped';
 	const STATE_RUNNING = 'running';
-	
-	/**
-	 * Returns Timer instance per id, with user context.
-	 * If the timer is not found or belongs to another user, returns a NullTimer instead.
-	 * 
-	 * @param Integer $id
-	 * @return Timer
-	 */
-	public static function getId($id) {
-		$timer = self::where(function($query) use ($id) {
-			$query
-			->where('user_id', '=', Auth::user()->id)
-			->where('id', '=', $id);
-		})->first();
-		
-		if (!empty($timer))
-		{
-			return $timer;
-		}
-		
-		return new NullTimer;
-	}
-	
+			
 	/**
 	 * Returns the validator for the data received.
 	 * 
@@ -104,19 +82,4 @@ class Timer extends Eloquent {
 	{
 		return (time() - strtotime($this->updated_at));
 	}	
-}
-
-/**
- * Null timer subclass.
- * This way, the validation of timer execution given its id is done in User::getId
- */
-class NullTimer extends Timer {
-	protected $isNull = True;
-	
-	public function start() {
-		return false;
-	}
-	public function stop() {
-		return false;
-	}
 }

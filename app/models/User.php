@@ -2,12 +2,6 @@
 
 use Illuminate\Auth\UserInterface;
 
-class UnknownUser extends Exception {
-	public function UnknownUser ($username) {
-		parent::__construct("Unknown user '$username'");
-	}
-}
-
 class User extends Eloquent implements UserInterface {
 	protected $table = 'users';
 	
@@ -30,6 +24,29 @@ class User extends Eloquent implements UserInterface {
 	}
 	
 	/**
+	 * Get a timer belonging to this user, given its id.
+	 * If the timer can not be found, a NullTimer is given instead.
+	 * 
+	 * @throws UnknownTimerException
+	 * @param Integer $id
+	 * @return Timer
+	 */
+	public function getTimer($id) {
+		$timer = Timer::where(function($query) use ($id) {
+			$query
+			->where('user_id', '=', $this->id)
+			->where('id', '=', $id);
+		})->first();
+		
+		if (!empty($timer))
+		{
+			return $timer;
+		}
+		
+		throw new UnknownTimerException($id, $this->id);
+	}
+	
+	/**
 	 * Returns the validator for the data received.
 	 * 
 	 * @param Array $input
@@ -43,28 +60,4 @@ class User extends Eloquent implements UserInterface {
 		
 		return Validator::make($input, $rules);
 	}
-
-	
-	/**
-	 * Authenticates the specified username and password.
-	 *
-	 * @throwns UnknownUser
-	 */
-	public static function authenticate($username, $password) {
-		$user = User::where(function ($query) use ($username, $password) {
-			$query
-				->where('username', '=', $username)
-				->where('password', '=', $password);
-		})->first();
-		
-		if ($user === Null)
-		{
-			throw new UnknownUser($username);
-		}
-		
-		Auth::login($user);
-		
-		return $user;
-	}	
 }
-
